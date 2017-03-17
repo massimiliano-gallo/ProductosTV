@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd
+		
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+        http://www.springframework.org/schema/oxm
+        http://www.springframework.org/schema/oxm/spring-oxm-3.1.xsd
+		
+		http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd"
+       >
+
+	<context:annotation-config />
+	<tx:annotation-driven />
+
+	<context:property-placeholder location="classpath:resource.properties" />
+
+	<bean id="fileExport" class="com.ripley.commerce.productos.utils.FileExport">
+	</bean>
+	
+	<bean id="ftpConfiguration" class="com.ripley.commerce.productos.vo.FTPConfiguration">
+		<property name="ip" value="${sftpExport.ip}"/>
+		<property name="user" value="${sftpExport.user}"/>
+		<property name="password" value="${sftpExport.password}"/>
+		<property name="puerto" value="${sftpExport.puerto}"/>
+		<property name="folder" value="${sftpExport.folder}"/>
+	</bean>
+	
+	<bean id="sftpImportConfiguration" class="com.ripley.commerce.productos.vo.SFTPConfiguration">
+		<property name="host" value="${sftpImport.ip}"/>
+		<property name="user" value="${sftpImport.user}"/>
+		<property name="key" value="${sftpImport.key}"/>
+		<property name="password" value="${sftpImport.password}"/>
+		<property name="puerto" value="${sftpImport.puerto}"/>
+		<property name="folder" value="${sftpImport.folder}"/>
+	</bean>
+	
+	<bean id="mailConfiguration" class="com.ripley.commerce.productos.vo.MailConfiguration">
+		<property name="from" value="${mail.from}"/>
+		<property name="to" value="${mail.to}"/>
+		<property name="host" value="${mail.host}"/>
+		<property name="puerto" value="${mail.puerto}"/>
+		<property name="protocolo" value="${mail.protocolo}"/>
+	</bean>
+	
+	<bean id="jobProductosTV" class="com.ripley.commerce.productos.JobProductosTV">
+		<property name="fileExport" ref="fileExport"/>
+		<property name="directoryRoot" value="${directory.root}"/>
+		<property name="directoryRespaldoIN" value="${directory.respaldoIN}"/>
+		<property name="directoryRespaldoOUT" value="${directory.respaldoOUT}"/>
+		<property name="sftpImportConfiguration" ref="sftpImportConfiguration"/>
+		<property name="ftpConfiguration" ref="ftpConfiguration"/>
+		<property name="mailConfiguration" ref="mailConfiguration"/>
+	</bean>
+</beans>
